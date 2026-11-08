@@ -141,6 +141,7 @@ text = text.replace("KSU_ZIP_STR=SukiSU-SUSFS", "KSU_ZIP_STR=BakaSU-EXPERIMENTAL
 position = text.rindex("make $MAKE_ARGS -j$(nproc)")
 text = text[:position] + """make $MAKE_ARGS olddefconfig
 make $MAKE_ARGS -j$(nproc) prepare
+make $MAKE_ARGS -j$(nproc) init/ security/selinux/
 make $MAKE_ARGS -j$(nproc) drivers/kernelsu/
 """ + text[position:]
 (kernel / "build-cloud.sh").write_text(text)
