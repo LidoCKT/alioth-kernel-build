@@ -1,0 +1,7 @@
+/work/
+/android-ndk-*/
+/ndk.zip
+/output/
+/inputs/
+__pycache__/
+*.pyc

@@ -1,0 +1,33 @@
+{
+  "kernel": {
+    "repository": "https://github.com/liyafe1997/kernel_xiaomi_sm8250_mod.git",
+    "commit": "262e587588a28c250c8bb4cc11256840d3c67d8c"
+  },
+  "sukisu": {
+    "repository": "https://github.com/liyafe1997/SukiSU-Ultra.git",
+    "commit": "f4863b20cc8dc0f8cc67418980f022e43014b598",
+    "driver_api": "3.1.7",
+    "manager": "3.2.0",
+    "version_code": 14680
+  },
+  "bakasu": {
+    "repository": "https://github.com/Baka-SU/BakaSU.git",
+    "commit": "516d3e87fbc986ccefdde2c2765f1700612441a9",
+    "version_code": 35257,
+    "manager": "4.2.0-rc3 (35257/6)"
+  },
+  "anykernel": {
+    "repository": "https://github.com/liyafe1997/AnyKernel3.git",
+    "commit": "1ae369a5004c1a577e9d1aa68f49d0c4f8627fc6"
+  },
+  "kpm": {
+    "version": "0.12.0",
+    "url": "https://github.com/SukiSU-Ultra/SukiSU_KernelPatch_patch/releases/download/0.12.0/patch_linux",
+    "sha256": "732c9bfbe921a28d98d4734589c378c9fa674d4878274f176cc4f2a07fd657eb"
+  },
+  "toolchain": {
+    "ndk": "r26d",
+    "clang": "17.0.2",
+    "url": "https://dl.google.com/android/repository/android-ndk-r26d-linux.zip"
+  }
+}

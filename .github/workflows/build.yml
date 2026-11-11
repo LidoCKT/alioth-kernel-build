@@ -1,0 +1,53 @@
+name: Build alioth kernel
+on:
+  workflow_dispatch:
+    inputs:
+      root:
+        description: Root implementation
+        required: true
+        default: bakasu
+        type: choice
+        options:
+          - sukisu
+          - bakasu
+permissions:
+  contents: read
+concurrency:
+  group: alioth-build
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends build-essential bc bison flex \
+            libssl-dev libelf-dev ccache zip unzip curl python3 \
+            gcc-aarch64-linux-gnu gcc-arm-linux-gnueabi
+      - name: Download NDK r26d
+        run: |
+          curl -fL --retry 3 https://dl.google.com/android/repository/android-ndk-r26d-linux.zip -o ndk.zip
+          unzip -q ndk.zip
+          echo "TOOLCHAIN_PATH=$GITHUB_WORKSPACE/android-ndk-r26d/toolchains/llvm/prebuilt/linux-x86_64/bin" >> "$GITHUB_ENV"
+      - name: Build selected implementation
+        env:
+          ROOT_IMPL: ${{ inputs.root }}
+        run: bash build.sh "$ROOT_IMPL"
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: alioth-${{ inputs.root }}-${{ github.run_id }}
+          path: work/${{ inputs.root }}/artifacts/
+          retention-days: 14
+      - name: Save failure log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: alioth-${{ inputs.root }}-failure-${{ github.run_id }}
+          path: work/${{ inputs.root }}/build.log
+          retention-days: 7

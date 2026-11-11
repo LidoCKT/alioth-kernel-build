@@ -15,10 +15,10 @@ patches = []
 
 def change(path, transform):
     file = kernel / path
-    before = file.read_text()
+    before = file.read_text(encoding="utf-8")
     after = transform(before)
     assert before != after, f"No change: {path}"
-    file.write_text(after)
+    file.write_text(after, encoding="utf-8", newline="\n")
     patches.extend(difflib.unified_diff(
         before.splitlines(True), after.splitlines(True),
         fromfile="a/" + path, tofile="b/" + path,
@@ -114,9 +114,9 @@ change("fs/open.c", lambda t: t.replace("#ifdef CONFIG_KSU\n", "#ifdef CONFIG_KS
 change("fs/read_write.c", remove_old_guards)
 change("drivers/input/input.c", remove_old_guards)
 change("kernel/reboot.c", reboot_hook)
-pathlib.Path("bakasu-integration.patch").write_text("".join(patches))
+pathlib.Path("bakasu-integration.patch").write_text("".join(patches), encoding="utf-8", newline="\n")
 
-text = (kernel / "build-cloud.sh").read_text()
+text = (kernel / "build-cloud.sh").read_text(encoding="utf-8")
 old = next(line for line in text.splitlines()
            if "curl -LSs" in line and "liyafe1997/SukiSU-Ultra" in line)
 text = once(text, old, '    echo "Using externally pinned BakaSU checkout"')
@@ -144,7 +144,7 @@ make $MAKE_ARGS -j$(nproc) prepare
 make $MAKE_ARGS -j$(nproc) init/ security/selinux/
 make $MAKE_ARGS -j$(nproc) drivers/kernelsu/
 """ + text[position:]
-(kernel / "build-cloud.sh").write_text(text)
+(kernel / "build-cloud.sh").write_text(text, encoding="utf-8", newline="\n")
 
 root = kernel / "KernelSU"
 assert not root.exists(), "Fresh source tree required"
@@ -162,7 +162,7 @@ for filename, line in [
     ("drivers/Kconfig", 'source "drivers/kernelsu/Kconfig"'),
 ]:
     file = kernel / filename
-    if line not in file.read_text():
-        with file.open("a") as stream:
+    if line not in file.read_text(encoding="utf-8"):
+        with file.open("a", encoding="utf-8", newline="\n") as stream:
             stream.write("\n" + line + "\n")
 print("Pinned BakaSU manual-hook integration prepared; no SUSFS or KPM.")
